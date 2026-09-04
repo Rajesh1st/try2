@@ -77,11 +77,9 @@
     </footer>
 
     <script>
-        // Get drama slug from URL
         const path = window.location.pathname;
         const slug = path.split('/').pop();
         
-        // Load drama data
         async function loadDrama() {
             try {
                 const response = await fetch(`/api/drama/${slug}`);
@@ -90,11 +88,9 @@
                 if (data.success) {
                     const drama = data.data;
                     
-                    // Set title
                     document.getElementById('dramaTitle').textContent = drama.title;
                     document.getElementById('dramaDesc').textContent = drama.description;
                     
-                    // Set meta
                     document.getElementById('dramaMeta').innerHTML = `
                         <span>${drama.country || 'Unknown'}</span>
                         <span>|</span>
@@ -105,14 +101,12 @@
                         <span>👁️ ${drama.views || 0} views</span>
                     `;
                     
-                    // Set genres
                     if (drama.genres && drama.genres.length > 0) {
                         document.getElementById('dramaGenres').innerHTML = drama.genres.map(g => 
                             `<span class="genre-tag">${g}</span>`
                         ).join('');
                     }
                     
-                    // Set episodes
                     if (drama.episodes && drama.episodes.length > 0) {
                         const episodeList = document.getElementById('episodeList');
                         episodeList.innerHTML = drama.episodes.map(ep => `
@@ -122,7 +116,6 @@
                             </a>
                         `).join('');
                         
-                        // Load first episode
                         playEpisode(1, slug);
                     }
                 }
@@ -131,7 +124,6 @@
             }
         }
         
-        // Play episode
         async function playEpisode(episode, slug) {
             try {
                 const response = await fetch(`/api/episode?drama=${slug}&episode=${episode}`);
@@ -140,14 +132,12 @@
                 if (data.success) {
                     const video = data.data;
                     
-                    // Set video source
                     const videoPlayer = document.getElementById('videoPlayer');
                     const source = document.getElementById('videoSource');
                     source.src = video.videoUrl;
                     videoPlayer.load();
                     videoPlayer.play();
                     
-                    // Add subtitles
                     const subtitleContainer = document.getElementById('subtitleContainer');
                     subtitleContainer.innerHTML = '';
                     
@@ -162,7 +152,6 @@
                         });
                     }
                     
-                    // Highlight active episode
                     document.querySelectorAll('.episode-btn').forEach(btn => {
                         btn.classList.remove('active');
                         if (btn.textContent.includes(`Episode ${episode}`)) {
@@ -176,7 +165,6 @@
             }
         }
         
-        // Share video
         function shareVideo() {
             if (navigator.share) {
                 navigator.share({
@@ -189,7 +177,6 @@
             }
         }
         
-        // Toggle favorite (local storage)
         function toggleFavorite() {
             const key = `favorite_${slug}`;
             const isFav = localStorage.getItem(key) === 'true';
@@ -197,7 +184,6 @@
             alert(isFav ? 'Removed from favorites' : 'Added to favorites! ❤️');
         }
         
-        // Load drama on page load
         document.addEventListener('DOMContentLoaded', loadDrama);
     </script>
 </body>
