@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-theme">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Watch - AsiaStream</title>
+    
+    <script>
+        (function() {
+            try {
+                var saved = localStorage.getItem('AsiaStream-theme');
+                if (saved === 'light' || saved === 'dark') {
+                    var html = document.documentElement;
+                    html.classList.remove('dark-theme', 'light-theme');
+                    html.classList.add(saved + '-theme');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdn.tailwindcss.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <span class="logo-text">Asia<span class="highlight">Stream</span></span>
+            </a>
+            <div class="header-right">
+                <label class="theme-toggle">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main class="watch-page">
+        <div class="watch-container">
+            <!-- Video Player -->
+            <div class="player-wrapper">
+                <video id="videoPlayer" controls>
+                    <source id="videoSource" src="" type="video/mp4">
+                </video>
+                <div id="subtitleContainer"></div>
+            </div>
+
+            <!-- Drama Info -->
+            <div class="drama-info">
+                <h1 id="dramaTitle">Loading...</h1>
+                <div class="meta" id="dramaMeta"></div>
+                <div class="actions">
+                    <button onclick="toggleFavorite()"><i class="fas fa-heart"></i> Favorite</button>
+                    <button onclick="shareVideo()"><i class="fas fa-share"></i> Share</button>
+                </div>
+                <div class="description">
+                    <h3>Description</h3>
+                    <p id="dramaDesc">Loading...</p>
+                    <div class="genres" id="dramaGenres"></div>
+                </div>
+            </div>
+
+            <!-- Episode List -->
+            <div class="episode-list">
+                <h3>📺 Episodes</h3>
+                <div id="episodeList"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="copyright">&copy; 2026 AsiaStream. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        // Get drama slug from URL
+        const path = window.location.pathname;
+        const slug = path.split('/').pop();
+        
+        // Load drama data
+        async function loadDrama() {
+            try {
+                const response = await fetch(`/api/drama/${slug}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const drama = data.data;
+                    
+                    // Set title
+                    document.getElementById('dramaTitle').textContent = drama.title;
+                    document.getElementById('dramaDesc').textContent = drama.description;
+                    
+                    // Set meta
+                    document.getElementById('dramaMeta').innerHTML = `
+                        <span>${drama.country || 'Unknown'}</span>
+                        <span>|</span>
+                        <span>${drama.status || 'Ongoing'}</span>
+                        <span>|</span>
+                        <span>${drama.type || 'TV Series'}</span>
+                        <span>|</span>
+                        <span>👁️ ${drama.views || 0} views</span>
+                    `;
+                    
+                    // Set genres
+                    if (drama.genres && drama.genres.length > 0) {
+                        document.getElementById('dramaGenres').innerHTML = drama.genres.map(g => 
+                            `<span class="genre-tag">${g}</span>`
+                        ).join('');
+                    }
+                    
+                    // Set episodes
+                    if (drama.episodes && drama.episodes.length > 0) {
+                        const episodeList = document.getElementById('episodeList');
+                        episodeList.innerHTML = drama.episodes.map(ep => `
+                            <a href="#" class="episode-btn" onclick="playEpisode(${ep.number}, '${slug}')">
+                                Episode ${ep.number}
+                                ${ep.has_subtitles ? ' <span class="sub-badge">CC</span>' : ''}
+                            </a>
+                        `).join('');
+                        
+                        // Load first episode
+                        playEpisode(1, slug);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading drama:', error);
+            }
+        }
+        
+        // Play episode
+        async function playEpisode(episode, slug) {
+            try {
+                const response = await fetch(`/api/episode?drama=${slug}&episode=${episode}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const video = data.data;
+                    
+                    // Set video source
+                    const videoPlayer = document.getElementById('videoPlayer');
+                    const source = document.getElementById('videoSource');
+                    source.src = video.videoUrl;
+                    videoPlayer.load();
+                    videoPlayer.play();
+                    
+                    // Add subtitles
+                    const subtitleContainer = document.getElementById('subtitleContainer');
+                    subtitleContainer.innerHTML = '';
+                    
+                    if (video.subtitles && video.subtitles.length > 0) {
+                        video.subtitles.forEach(sub => {
+                            const track = document.createElement('track');
+                            track.src = sub.url;
+                            track.kind = 'subtitles';
+                            track.label = sub.language;
+                            track.srclang = sub.language.toLowerCase();
+                            videoPlayer.appendChild(track);
+                        });
+                    }
+                    
+                    // Highlight active episode
+                    document.querySelectorAll('.episode-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.textContent.includes(`Episode ${episode}`)) {
+                            btn.classList.add('active');
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading episode:', error);
+                alert('Failed to load video. Please try again.');
+            }
+        }
+        
+        // Share video
+        function shareVideo() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        }
+        
+        // Toggle favorite (local storage)
+        function toggleFavorite() {
+            const key = `favorite_${slug}`;
+            const isFav = localStorage.getItem(key) === 'true';
+            localStorage.setItem(key, !isFav);
+            alert(isFav ? 'Removed from favorites' : 'Added to favorites! ❤️');
+        }
+        
+        // Load drama on page load
+        document.addEventListener('DOMContentLoaded', loadDrama);
+    </script>
+</body>
+</html>
