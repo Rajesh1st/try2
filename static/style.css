@@ -1,0 +1,827 @@
+/* ============================================
+   BASE THEME VARIABLES
+   ============================================ */
+:root {
+    --theme-primary: #1eb1ff;
+    --theme-secondary: #00acc9;
+    --theme-accent: #fbbf24;
+    --theme-header-bg: #0a0e17;
+    --theme-footer-bg: #0a0e17;
+    --theme-card-bg: #181c25;
+    --theme-body-bg: #0d0f14;
+    --theme-text-primary: #b1b5c0;
+    --theme-text-secondary: #8a8f9a;
+    --theme-border: #232936;
+    --bg-body: var(--theme-body-bg);
+    --bg-dark: var(--theme-header-bg);
+    --bg-card: var(--theme-card-bg);
+    --text-primary: var(--theme-text-primary);
+    --text-secondary: var(--theme-text-secondary);
+    --border-color: var(--theme-border);
+}
+
+.light-theme {
+    --theme-header-bg: #ffffff;
+    --theme-footer-bg: #f8fafc;
+    --theme-card-bg: #ffffff;
+    --theme-body-bg: #f0f2f5;
+    --theme-text-primary: #1a202c;
+    --theme-text-secondary: #4a5568;
+    --theme-border: #e2e8f0;
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.site-header {
+    background-color: var(--bg-dark);
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background-color 0.3s ease;
+}
+
+.header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.logo .highlight {
+    color: var(--theme-accent);
+}
+
+.desktop-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.desktop-nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.desktop-nav a:hover,
+.desktop-nav a.active {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.search-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.search-btn:hover {
+    color: var(--theme-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.theme-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #4b5563;
+    border-radius: 24px;
+    transition: 0.3s;
+}
+
+.slider::before {
+    content: '';
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.theme-toggle input:checked + .slider {
+    background-color: var(--theme-primary);
+}
+
+.theme-toggle input:checked + .slider::before {
+    transform: translateX(20px);
+}
+
+/* Search Dropdown */
+.search-dropdown {
+    max-width: 600px;
+    margin: 8px auto 0;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: none;
+}
+
+.search-dropdown:not(.hidden) {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+.search-container {
+    display: flex;
+    gap: 8px;
+}
+
+.search-container input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-body);
+    color: var(--text-primary);
+    font-size: 14px;
+    outline: none;
+}
+
+.search-container input:focus {
+    border-color: var(--theme-primary);
+}
+
+.search-container button {
+    padding: 10px 20px;
+    background: var(--theme-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.search-results {
+    margin-top: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: background 0.2s ease;
+}
+
+.search-result-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.search-result-item img {
+    width: 60px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.search-result-item .info {
+    flex: 1;
+}
+
+.search-result-item .title {
+    font-weight: 600;
+}
+
+.search-result-item .episode {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   HERO SLIDER
+   ============================================ */
+.hero-slider {
+    position: relative;
+    max-width: 1400px;
+    margin: 20px auto;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #05070c;
+}
+
+@media (max-width: 768px) {
+    .hero-slider {
+        height: 250px;
+        border-radius: 8px;
+        margin: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-slider {
+        height: 180px;
+    }
+}
+
+.hero-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+}
+
+.hero-slide {
+    min-width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.hero-slide::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+}
+
+.hero-slide-content {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    z-index: 2;
+    color: white;
+    max-width: 60%;
+}
+
+@media (max-width: 768px) {
+    .hero-slide-content {
+        bottom: 20px;
+        left: 20px;
+        max-width: 80%;
+    }
+}
+
+.hero-slide-content h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+@media (max-width: 768px) {
+    .hero-slide-content h2 {
+        font-size: 1.5rem;
+    }
+}
+
+.hero-slide-content p {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+@media (max-width: 768px) {
+    .hero-slide-content p {
+        font-size: 0.85rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+.hero-slide-content .watch-btn {
+    display: inline-block;
+    padding: 10px 24px;
+    background: var(--theme-primary);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.hero-slide-content .watch-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(30, 177, 255, 0.4);
+}
+
+.hero-slide-tag {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 2;
+}
+
+.hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 3;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-arrow:hover {
+    background: var(--theme-primary);
+}
+
+.hero-arrow.prev {
+    left: 16px;
+}
+
+.hero-arrow.next {
+    right: 16px;
+}
+
+@media (max-width: 768px) {
+    .hero-arrow {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    .hero-arrow.prev { left: 8px; }
+    .hero-arrow.next { right: 8px; }
+}
+
+.hero-dots {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 3;
+}
+
+.hero-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hero-dot.active {
+    background: var(--theme-primary);
+    width: 30px;
+    border-radius: 5px;
+}
+
+/* ============================================
+   SHELF SECTIONS
+   ============================================ */
+.shelf-section {
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 0 24px;
+}
+
+@media (max-width: 768px) {
+    .shelf-section {
+        padding: 0 12px;
+        margin: 20px auto;
+    }
+}
+
+.shelf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.shelf-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.shelf-header a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.shelf-header a:hover {
+    color: var(--theme-primary);
+}
+
+.shelf-track {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .shelf-track {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .shelf-track {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+    }
+}
+
+.drama-card {
+    background: var(--bg-card);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.drama-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    border-color: var(--theme-primary);
+}
+
+.drama-card .thumbnail {
+    position: relative;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    overflow: hidden;
+    background: var(--bg-body);
+}
+
+.drama-card .thumbnail img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.drama-card:hover .thumbnail img {
+    transform: scale(1.05);
+}
+
+.drama-card .episode-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.drama-card .info {
+    padding: 12px;
+}
+
+.drama-card .title {
+    font-weight: 600;
+    font-size: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 40px;
+}
+
+@media (max-width: 480px) {
+    .drama-card .title {
+        font-size: 12px;
+        min-height: 32px;
+    }
+}
+
+/* ============================================
+   WATCH PAGE
+   ============================================ */
+.watch-page {
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 0 24px;
+}
+
+@media (max-width: 768px) {
+    .watch-page {
+        padding: 0 12px;
+        margin: 12px auto;
+    }
+}
+
+.watch-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+@media (min-width: 1024px) {
+    .watch-container {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.player-wrapper {
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.player-wrapper video {
+    width: 100%;
+    display: block;
+    aspect-ratio: 16/9;
+}
+
+.drama-info {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.drama-info h1 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.drama-info .meta {
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.drama-info .actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.drama-info .actions button {
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.drama-info .actions button:hover {
+    background: var(--theme-primary);
+    color: white;
+    border-color: var(--theme-primary);
+}
+
+.drama-info .description h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.drama-info .description p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.drama-info .genres {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.genre-tag {
+    padding: 4px 12px;
+    background: rgba(30, 177, 255, 0.1);
+    border: 1px solid rgba(30, 177, 255, 0.2);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--theme-primary);
+}
+
+.episode-list {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.episode-list h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.episode-list .episode-btn {
+    display: block;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-body);
+    color: var(--text-primary);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+}
+
+.episode-list .episode-btn:hover {
+    border-color: var(--theme-primary);
+}
+
+.episode-list .episode-btn.active {
+    background: var(--theme-primary);
+    color: white;
+    border-color: var(--theme-primary);
+}
+
+.sub-badge {
+    color: var(--theme-accent);
+    font-size: 11px;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer {
+    background-color: var(--bg-dark);
+    border-top: 1px solid var(--border-color);
+    padding: 20px 24px;
+    margin-top: 40px;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: var(--theme-primary);
+}
+
+.copyright {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+/* ============================================
+   UTILITY
+   ============================================ */
+.hidden {
+    display: none !important;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}
+
+.loading::after {
+    content: '';
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--theme-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 12px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-body);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--theme-primary);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-secondary);
+}
