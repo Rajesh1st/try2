@@ -49,7 +49,7 @@ def serve_static(path):
 def get_latest_dramas():
     try:
         response = requests.get(BASE_URL, headers=HEADERS, timeout=15)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'html.parser')  # Built-in parser
         dramas = []
         
         shelf_tracks = soup.find_all('div', class_='shelf-track')
@@ -227,12 +227,55 @@ def get_featured_dramas():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-# 7. HEALTH CHECK
+# 7. GET ALL DRAMAS WITH PAGINATION
+@app.route('/api/dramas', methods=['GET'])
+def get_all_dramas():
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 20, type=int)
+    
+    try:
+        all_dramas = []
+        response = requests.get(BASE_URL, headers=HEADERS, timeout=15)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        shelf_tracks = soup.find_all('div', class_='shelf-track')
+        for track in shelf_tracks:
+            cards = track.find_all('div', class_='shelf-tile')
+            for card in cards:
+                link = card.find('a')
+                if link:
+                    drama_data = extract_drama_from_card(link, card)
+                    if drama_data:
+                        all_dramas.append(drama_data)
+        
+        # Remove duplicates
+        seen = set()
+        unique_dramas = []
+        for drama in all_dramas:
+            if drama['slug'] not in seen:
+                seen.add(drama['slug'])
+                unique_dramas.append(drama)
+        
+        start = (page - 1) * limit
+        end = start + limit
+        paginated = unique_dramas[start:end]
+        
+        return jsonify({
+            'success': True,
+            'page': page,
+            'limit': limit,
+            'total': len(unique_dramas),
+            'data': paginated
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+# 8. HEALTH CHECK
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({
         'status': 'healthy',
-        'service': 'AsiaFlix Scraper API',
+        'service': 'AsiaStream Scraper API',
         'version': '1.0.0'
     })
 
@@ -261,7 +304,8 @@ def extract_drama_from_card(link, card):
             'episode': episode,
             'url': href
         }
-    except:
+    except Exception as e:
+        print(f"Error extracting card: {e}")
         return None
 
 def extract_drama_info(soup):
