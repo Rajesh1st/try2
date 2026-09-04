@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-theme">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AsiaStream - Watch Asian Dramas Free</title>
+    
+    <script>
+        (function() {
+            try {
+                var saved = localStorage.getItem('AsiaStream-theme');
+                if (saved === 'light' || saved === 'dark') {
+                    var html = document.documentElement;
+                    html.classList.remove('dark-theme', 'light-theme');
+                    html.classList.add(saved + '-theme');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdn.tailwindcss.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <span class="logo-text">Asia<span class="highlight">Stream</span></span>
+            </a>
+            
+            <nav class="desktop-nav">
+                <a href="/" class="active">Home</a>
+                <a href="#" onclick="loadCategory('kdrama')">Dramas</a>
+                <a href="#" onclick="loadCategory('hollywood')">Movies</a>
+                <a href="#" onclick="loadCategory('anime')">Anime</a>
+            </nav>
+            
+            <div class="header-right">
+                <button onclick="toggleSearch()" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <label class="theme-toggle">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Search Box -->
+        <div id="searchBox" class="hidden search-dropdown">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search dramas..." onkeyup="searchDramas(event)">
+                <button onclick="searchDramas()"><i class="fas fa-search"></i></button>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- Hero Slider -->
+        <div class="hero-slider" id="heroSlider">
+            <div class="hero-track" id="heroTrack">
+                <!-- Loaded dynamically -->
+            </div>
+            <button class="hero-arrow prev" onclick="prevSlide()">❮</button>
+            <button class="hero-arrow next" onclick="nextSlide()">❯</button>
+            <div class="hero-dots" id="heroDots"></div>
+        </div>
+
+        <!-- Latest Dramas -->
+        <section class="shelf-section">
+            <div class="shelf-header">
+                <h3>🔥 Latest Updates</h3>
+                <a href="#" onclick="loadAll()">View All →</a>
+            </div>
+            <div class="shelf-track" id="latestShelf"></div>
+        </section>
+
+        <!-- Featured Dramas -->
+        <section class="shelf-section">
+            <div class="shelf-header">
+                <h3>⭐ Featured Dramas</h3>
+                <a href="#" onclick="loadAll()">View All →</a>
+            </div>
+            <div class="shelf-track" id="featuredShelf"></div>
+        </section>
+
+        <!-- Category Section -->
+        <section class="shelf-section" id="categorySection">
+            <div class="shelf-header">
+                <h3 id="categoryTitle">📺 Popular Dramas</h3>
+                <a href="#" onclick="loadAll()">View All →</a>
+            </div>
+            <div class="shelf-track" id="categoryShelf"></div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Us</a>
+            </div>
+            <div class="copyright">&copy; 2026 AsiaStream. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="/static/script.js"></script>
+    <script>
+        // Load all content on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHeroSlider();
+            loadLatestDramas();
+            loadFeaturedDramas();
+            loadCategory('drama');
+        });
+    </script>
+</body>
+</html>
